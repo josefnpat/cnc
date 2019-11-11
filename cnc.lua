@@ -63,7 +63,7 @@ function cnc:simulate()
     local player = self._players[player_index]
     local encounter = math.random(1,4)
     local difficulty = math.random(1,4)
-    local roll = math.random(1,4)
+    local roll = math.random(1,4)-2
     self.print("\tencounter: "..cnc.encounter_types[encounter])
     self.print("\tdifficulty: "..difficulty)
     self.print("\tbase roll: "..roll)
@@ -76,8 +76,8 @@ function cnc:simulate()
       if roll > difficulty then
         self.print("\t\tSuccess Roll")
         -- get a related item
-        local reward_type = cnc.encounter_types[encounter]
-        self:addItem(player,reward_type)
+        --local reward_type = cnc.encounter_types[encounter]
+        --self:addItem(player,reward_type)
       else
         self.print("\t\tSadness")
         -- you are sad
@@ -88,6 +88,7 @@ function cnc:simulate()
       if difficulty ~= 4 then
         -- get item
         local reward_type = cnc.encounter_types[difficulty]
+        self:addItem(player,reward_type)
         self:addItem(player,reward_type)
       else
         -- get map piece
@@ -110,7 +111,17 @@ function cnc:simulate()
       player_index = 1
     end
   end
-  return self._map_pieces == 0,turn_count
+  local avg_items = 0
+  for _,player in pairs(self._players) do
+    local avg_player_items = 0
+    for _,slot in pairs(cnc.player_slot) do
+      if player[slot] then
+        avg_player_items = avg_player_items + 1
+      end
+    end
+    avg_items = avg_items + avg_player_items/#self._players
+  end
+  return self._map_pieces == 0,turn_count,avg_items
 end
 
 return cnc
