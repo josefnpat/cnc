@@ -59,11 +59,11 @@ function cnc:simulate()
   local player_index = 1
   while #self._players > 0 and self._map_pieces > 0 do
     turn_count = turn_count + 1
-    self.print("Turn "..turn_count.." ("..player_index.."/"..#self._players.."}")
+    self.print("Turn "..turn_count.." (player: "..player_index.."/"..#self._players..")")
     local player = self._players[player_index]
     local encounter = math.random(1,4)
     local difficulty = math.random(1,4)
-    local roll = math.random(1,4)-2
+    local roll = math.random(1,4)-1
     self.print("\tencounter: "..cnc.encounter_types[encounter])
     self.print("\tdifficulty: "..difficulty)
     self.print("\tbase roll: "..roll)
@@ -89,7 +89,6 @@ function cnc:simulate()
         -- get item
         local reward_type = cnc.encounter_types[difficulty]
         self:addItem(player,reward_type)
-        self:addItem(player,reward_type)
       else
         -- get map piece
         self.print("found a map piece - remaining: "..self._map_pieces)
@@ -111,17 +110,7 @@ function cnc:simulate()
       player_index = 1
     end
   end
-  local avg_items = 0
-  for _,player in pairs(self._players) do
-    local avg_player_items = 0
-    for _,slot in pairs(cnc.player_slot) do
-      if player[slot] then
-        avg_player_items = avg_player_items + 1
-      end
-    end
-    avg_items = avg_items + avg_player_items/#self._players
-  end
-  return self._map_pieces == 0,turn_count,avg_items
+  return self._map_pieces == 0,turn_count
 end
 
 return cnc
